@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 
 from scikits_odes_sundials.ida import IDA
+from scikits_odes_sundials.common_defs import DTYPE
 
 
 def resfn(t, y, yp, res, user_data):
@@ -45,6 +46,10 @@ def test_iterative_solvers(linsolver):
                  prec_setupfn=prec_setupfn, prec_solvefn=prec_solvefn,
                  user_data=user_data)
 
-    soln = solver.solve(tspan, y0, yp0)
-    assert soln.flag == 0
+    # np.linalg.solve does not support extended precision
+    if DTYPE == np.longdouble:
+        pass
+    else:
+        soln = solver.solve(tspan, y0, yp0)
+        assert soln.flag == 0
    
